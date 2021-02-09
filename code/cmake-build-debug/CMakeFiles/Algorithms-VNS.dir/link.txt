@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/Algorithms-VNS.dir/main.cpp.o CMakeFiles/Algorithms-VNS.dir/Factory.cpp.o  -o Algorithms-VNS 

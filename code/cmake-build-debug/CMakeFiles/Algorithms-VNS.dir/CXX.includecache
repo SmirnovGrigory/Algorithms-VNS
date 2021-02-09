@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/toliman/Projects/Algorithms-VNS/code/Factory.cpp
+iostream
+-
+fstream
+-
+Factory.h
+/home/toliman/Projects/Algorithms-VNS/code/Factory.h
+
+/home/toliman/Projects/Algorithms-VNS/code/Factory.h
+vector
+-
+string
+-
+
