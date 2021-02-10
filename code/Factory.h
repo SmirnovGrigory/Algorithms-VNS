@@ -16,17 +16,38 @@ private:
     int NumberOfOnes = 0;
     int NumberOfClasters = 1;
 
+    double bestCost = 0;
+    vector<int> bestParts; //resize in costructor
+    vector<int> bestMachines;
+
 public:
     explicit Factory(const string &fileName = "");
 
     ~Factory();
 
-    int getNumberOfOnesInClasses();
+    int getNumberOfOnesInClasters();
 
     int getCapacityOfClasters();
 
     double getCost();
 
+    void printMatrix();
+
+    void localSearch();
+
+    bool switchPartCluster();
+
+    bool switchMachineCluster();
+
+    bool switchClaster();
+
+    void uniteClusters();
+
+    void divideClusters();
+
+    void shaking();
+
+    void VND(int iterations);
 };
 
 #endif // !FACTORY_H
