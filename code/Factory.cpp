@@ -46,13 +46,19 @@ Factory::Factory(const string &fileName) {
         dividableClustersCount = 1;
     this->matrix = new int *[this->machinesNumb];
     rep(machinesNumb) this->matrix[i] = new int[this->partsNumb];
+    rep(machinesNumb) {
+        string inputLine;
+        getline(input, inputLine);
+        auto indexes = split(inputLine);
+        for (auto index : indexes) {
+            matrix[i][index - 1] = 1;
+        }
+    }
 }
 
 int Factory::getNumberOfOnesInClusters() {
     int result = 0;
-    rep(machinesNumb)
-        repj(partsNumb)
-            if (matrix[i][j] == 1 && machines[i] == parts[j])
+    rep(machinesNumb)repj(partsNumb)if (matrix[i][j] == 1 && machines[i] == parts[j])
                 result++;
     return result;
 }
@@ -62,11 +68,9 @@ int Factory::getCapacityOfClusters() {
     rep(NumberOfClusters) {
         int machinesInCluster = 0;
         int partsInCluster = 0;
-        repj(machinesNumb)
-            if (machines[j] == i)
+        repj(machinesNumb)if (machines[j] == i)
                 machinesInCluster++;
-        repj(partsNumb)
-            if (parts[j] == i)
+        repj(partsNumb)if (parts[j] == i)
                 partsInCluster++;
         result += machinesInCluster * partsInCluster;
     }
@@ -86,9 +90,7 @@ void Factory::printMatrix() {
 }
 
 bool Factory::switchPartCluster() {
-    rep(partsNumb)
-        repj(NumberOfClusters)
-            if (parts[i] != j) {
+    rep(partsNumb)repj(NumberOfClusters)if (parts[i] != j) {
                 double oldCap = 0, oldIn1 = 0;
                 for (int k = 0; k < machinesNumb; k++)
                     if (machines[k] == parts[i]) {
@@ -113,9 +115,7 @@ bool Factory::switchPartCluster() {
 }
 
 bool Factory::switchMachineCluster() {
-    rep(machinesNumb)
-        repj(NumberOfClusters)
-            if (machines[i] != j) {
+    rep(machinesNumb)repj(NumberOfClusters)if (machines[i] != j) {
                 double oldCap = 0, oldIn1 = 0;
                 for (int k = 0; k < partsNumb; k++)
                     if (parts[k] == machines[i]) {
