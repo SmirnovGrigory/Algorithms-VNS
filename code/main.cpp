@@ -7,11 +7,12 @@ void print(T t) {
     cout << t << '\n';
 }
 
+void test20x20() {
+    Factory solution("test20x20");
+    solution.VND(1000000);
+}
+
 signed main() {
-    Factory solution("simple-test");
-    solution.printMatrix();
-    solution.printAnswer();
-    solution.generateStartSolution();
-    solution.VND(1000);
+    test20x20();
     return 0;
 }

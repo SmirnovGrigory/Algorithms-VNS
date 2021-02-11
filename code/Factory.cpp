@@ -14,7 +14,7 @@ Factory::~Factory() {
 }
 
 vector<int> Factory::split(string &s) {
-    s += ' ';
+    if (s[s.length() - 1] != ' ')s += ' ';
     vector<int> result;
     string number;
     for (auto x : s) {
@@ -43,8 +43,6 @@ Factory::Factory(const string &fileName) {
     dividableClusters[0] = true;
     dividableClustersCount = 1;
     auto dimensions = getClusterSize(0);
-    if (dimensions.first > 1 && dimensions.second > 1)
-        dividableClustersCount = 1;
     this->matrix = new int *[this->machinesNumb];
     rep(machinesNumb) this->matrix[i] = new int[this->partsNumb];
     rep(machinesNumb) {
@@ -68,7 +66,7 @@ int Factory::getNumberOfOnesInClusters() {
 
 int Factory::getCapacityOfClusters() {
     int result = 0;
-    rep(NumberOfClusters) {
+    rep(min(machinesNumb, partsNumb)) {
         int machinesInCluster = 0;
         int partsInCluster = 0;
         repj(machinesNumb)if (machines[j] == i)
@@ -82,8 +80,13 @@ int Factory::getCapacityOfClusters() {
 
 double Factory::getCost() {
     int onesInClasters = getNumberOfOnesInClusters();
-    return (static_cast<double>(onesInClasters) /
-            static_cast<double>(NumberOfOnes + getCapacityOfClusters() - onesInClasters));
+    double result =
+            static_cast<double>(onesInClasters) /
+            static_cast<double>(NumberOfOnes + getCapacityOfClusters() - onesInClasters);
+//    if (result - 1.24 < 0.2) {
+//        cout << "mistake " << onesInClasters << " " << getCapacityOfClusters() << " " << NumberOfOnes << endl;
+//    }
+    return result;
 }
 
 void Factory::printMatrix() {
@@ -112,8 +115,20 @@ bool Factory::switchPartCluster() {
                 if (newIn1 / newCap > oldIn1 / oldCap) {
                     uint oldCluster = parts[i];
                     auto dimension = getClusterSize(oldCluster);
+                    auto newDimension = getClusterSize(j);
+                    // !!!!!!!!!!!!!!
+                    if (newDimension.second == 1 && newDimension.first > 1) {
+                        dividableClusters[j] = true;
+                        dividableClustersCount++;
+                    }
+                    if (dimension.second == 2 && dimension.first > 1) {
+                        dividableClusters[oldCluster] = false;
+                        dividableClustersCount--;
+                    }
+                    // !!!!!!!!!!!!!!
                     parts[i] = j;
                     if (dimension.second == 1) {
+                        dividableClusters[j] = true;
                         for (int k = 0; k < machinesNumb; ++k) {
                             if (machines[k] == oldCluster) {
                                 machines[k] = j;
@@ -123,16 +138,25 @@ bool Factory::switchPartCluster() {
                         auto baseDim = getClusterSize(j);
                         if (baseDim.first == 1 || baseDim.second == 1) {
                             dividableClustersCount++;
-                            cout << dividableClustersCount << endl;
                         }
 
                         reduceClustersAfterMerge(oldCluster);
 //                        recountAbilityToDivide(oldCluster);
 //                        recountAbilityToDivide(j);
-                        return true;
                     }
+//                    cout << dividableClustersCount << " switch part ";
+//                    for (auto x : dividableClusters) {
+//                        cout << x << ' ';
+//                    }
+//                    cout << endl;
+                    return true;
                 }
             }
+//    cout << dividableClustersCount << " switch part ";
+//    for (auto x : dividableClusters) {
+//        cout << x << ' ';
+//    }
+//    cout << endl;
     return false;
 }
 
@@ -155,8 +179,20 @@ bool Factory::switchMachineCluster() {
                 if (newIn1 / newCap > oldIn1 / oldCap) {
                     uint oldCluster = machines[i];
                     auto dimensions = getClusterSize(oldCluster);
+                    auto newDimension = getClusterSize(j);
+                    // !!!!!!!!!!!!!!
+                    if (newDimension.first == 1 && newDimension.second > 1) {
+                        dividableClusters[j] = true;
+                        dividableClustersCount++;
+                    }
+                    if (dimensions.first == 2 && dimensions.second > 1) {
+                        dividableClusters[oldCluster] = false;
+                        dividableClustersCount--;
+                    }
+                    // !!!!!!!!!!!!!!
                     machines[i] = j;
                     if (dimensions.first == 1) {
+                        dividableClusters[j] = true;
                         for (int k = 0; k < partsNumb; ++k) {
                             if (parts[k] == oldCluster) {
                                 parts[k] = j;
@@ -164,17 +200,26 @@ bool Factory::switchMachineCluster() {
                         }
                         NumberOfClusters--;
                         auto baseDim = getClusterSize(j);
-                        if (baseDim.first == 1 || baseDim.second == 1){
+                        if (baseDim.first == 1 || baseDim.second == 1) {
                             dividableClustersCount++;
-                            cout << dividableClustersCount<<endl;
                         }
                         reduceClustersAfterMerge(oldCluster);
 //                        recountAbilityToDivide(oldCluster);
 //                        recountAbilityToDivide(j);
                     }
+//                    cout << dividableClustersCount << " switch machine ";
+//                    for (auto x : dividableClusters) {
+//                        cout << x << ' ';
+//                    }
+//                    cout << endl;
                     return true;
                 }
             }
+//    cout << dividableClustersCount << " switch machine ";
+//    for (auto x : dividableClusters) {
+//        cout << x << ' ';
+//    }
+//    cout << endl;
     return false;
 }
 
@@ -196,40 +241,32 @@ bool Factory::switchCluster() {
 
 void Factory::localSearch() {
     while (switchCluster());
-    updateDividableClustersVector();
+    // updateDividableClustersVector();
 }
 
 void Factory::uniteClusters() {
     random_device generator;
     uint firstCluster = generator() % NumberOfClusters;
     uint secondCluster = generator() % (NumberOfClusters - 1);
-    auto firstDimension = getClusterSize(firstCluster);
-    if (firstCluster > secondCluster)
-        swap(firstCluster, secondCluster);
     if (secondCluster >= firstCluster) {
         secondCluster++;
     }
+    if (firstCluster > secondCluster) {
+        swap(firstCluster, secondCluster);
+    }
+    auto firstDimension = getClusterSize(firstCluster);
     auto secondDimension = getClusterSize(secondCluster);
-    pair<int, int> newClusterDimension = make_pair(
-            firstDimension.first + secondDimension.first,
-            firstDimension.second + secondDimension.second
-    );
     if (firstDimension.first > 1 &&
         firstDimension.second > 1 &&
         secondDimension.first > 1 &&
-        secondDimension.second > 1 &&
-        newClusterDimension.first > 1 &&
-        newClusterDimension.second > 1) {
+        secondDimension.second > 1) {
         dividableClustersCount--;
-        cout << dividableClustersCount << endl;
     }
     if ((firstDimension.first == 1 ||
          firstDimension.second == 1) &&
         (secondDimension.first == 1 ||
          secondDimension.second == 1)) {
         dividableClustersCount++;
-        cout << dividableClustersCount<<endl;
-
     }
     rep(partsNumb) {
         if (parts[i] == secondCluster)
@@ -251,6 +288,11 @@ void Factory::uniteClusters() {
         dividableClusters[i] = dividableClusters[i + 1];
     }
 //    dividableClustersCount = getDividableClustersCount();
+//    cout << dividableClustersCount << " Unite clusters ";
+//    for (auto x : dividableClusters) {
+//        cout << x << ' ';
+//    }
+//    cout << endl;
 }
 
 void Factory::divideClusters() {
@@ -269,8 +311,7 @@ void Factory::divideClusters() {
     uint newClusterMachines = generator() % (dimension.first - 1) + 1;
     uint newClusterParts = generator() % (dimension.second - 1) + 1;
     dividableClustersCount--;
-    cout << dividableClustersCount << endl;
-
+//    cout << dividableClustersCount << " Divide clusters" << endl;
     dividableClusters[clusterToDivide] = false;
     uint changedMachines = 0;
     uint changedParts = 0;
@@ -292,14 +333,17 @@ void Factory::divideClusters() {
     auto secondDimension = getClusterSize(newCluster);
     if (firstDimension.first > 1 && firstDimension.second > 1) {
         dividableClustersCount++;
-        cout << dividableClustersCount<<endl;
         dividableClusters[clusterToDivide] = true;
     }
     if (secondDimension.first > 1 && secondDimension.second > 1) {
         dividableClustersCount++;
-        cout << dividableClustersCount<<endl;
         dividableClusters[newCluster] = true;
     }
+//    cout << dividableClustersCount << endl;
+//    for (auto x : dividableClusters) {
+//        cout << x << ' ';
+//    }
+//    cout << endl;
 //    dividableClustersCount = getDividableClustersCount();
 }
 
@@ -321,9 +365,13 @@ void Factory::shaking() {
 
 void Factory::VND(int iterations) {
     generateStartSolution();
+    // dividableClustersCount = getDividableClustersCount();
     rep(iterations) {
         shaking();
+        dividableClustersCount = getDividableClustersCount();
+        // dividableClustersCount = getDividableClustersCount();
         localSearch();
+        dividableClustersCount = getDividableClustersCount();
         if (getCost() > bestCost) {
             copy(machines.begin(), machines.end(), bestMachines.begin());
             copy(parts.begin(), parts.end(), bestParts.begin());
@@ -332,6 +380,12 @@ void Factory::VND(int iterations) {
             // Debug info:
 
             cout << "Number of clusters : " << NumberOfClusters << " * * * Best cost is : " << bestCost << " \n";
+            for (auto m : machines)
+                cout << m + 1 << ' ';
+            cout << endl;
+            for (auto p : parts)
+                cout << p + 1 << ' ';
+            cout << endl;
         }
     }
 }
@@ -405,6 +459,8 @@ void Factory::reduceClustersAfterMerge(int cluster) {
         if (machines[k] > cluster)
             machines[k]--;
     }
+    for (int k = cluster; k < dividableClusters.size() - 1; ++k)
+        dividableClusters[k] = dividableClusters[k + 1];
 }
 
 void Factory::updateDividableClustersVector() {
