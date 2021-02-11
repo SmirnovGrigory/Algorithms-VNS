@@ -62,7 +62,11 @@ public:
 
     void printAnswer();
 
-    int getClusterCount() const;
+    void reduceClustersAfterMerge(int cluster);
+
+    void updateDividableClustersVector();
+
+    [[nodiscard]] int getClusterCount() const;
 
     void recountAbilityToDivide(int cluster);
 
