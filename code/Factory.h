@@ -14,20 +14,27 @@ private:
     int partsNumb = 0;
     int machinesNumb = 0;
     int NumberOfOnes = 0;
-    int NumberOfClasters = 1;
+    int NumberOfClusters = 1;
 
     double bestCost = 0;
     vector<int> bestParts; //resize in costructor
     vector<int> bestMachines;
+
+    vector<bool> dividableClusters;
+    int dividableClustersCount;
 
 public:
     explicit Factory(const string &fileName = "");
 
     ~Factory();
 
-    int getNumberOfOnesInClasters();
+    static vector<int> split(string &s);
 
-    int getCapacityOfClasters();
+    int getNumberOfOnesInClusters();
+
+    int getCapacityOfClusters();
+
+    void generateStartSolution();
 
     double getCost();
 
@@ -39,7 +46,7 @@ public:
 
     bool switchMachineCluster();
 
-    bool switchClaster();
+    bool switchCluster();
 
     void uniteClusters();
 
@@ -48,6 +55,8 @@ public:
     void shaking();
 
     void VND(int iterations);
+
+    pair<int, int> getClusterSize(int cluster);
 };
 
 #endif // !FACTORY_H
