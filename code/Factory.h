@@ -34,6 +34,8 @@ public:
 
     int getCapacityOfClusters();
 
+    int getDividableClustersCount();
+
     void generateStartSolution();
 
     double getCost();
@@ -55,6 +57,14 @@ public:
     void shaking();
 
     void VND(int iterations);
+
+    void testFunction();
+
+    void printAnswer();
+
+    int getClusterCount() const;
+
+    void recountAbilityToDivide(int cluster);
 
     pair<int, int> getClusterSize(int cluster);
 };
