@@ -6,15 +6,19 @@
 
 #IncludeRegexTransform: 
 
+/home/toliman/Projects/Algorithms-VNS/code/Factory.cpp
+iostream
+-
+fstream
+-
+random
+-
+Factory.h
+/home/toliman/Projects/Algorithms-VNS/code/Factory.h
+
 /home/toliman/Projects/Algorithms-VNS/code/Factory.h
 vector
 -
 string
 -
-
-/home/toliman/Projects/Algorithms-VNS/code/main.cpp
-iostream
--
-Factory.h
-/home/toliman/Projects/Algorithms-VNS/code/Factory.h
 

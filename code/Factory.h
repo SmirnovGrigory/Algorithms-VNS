@@ -26,7 +26,7 @@ private:
 public:
     explicit Factory(const string &fileName = "");
 
-    ~Factory();
+    //~Factory();
 
     static vector<int> split(string &s);
 

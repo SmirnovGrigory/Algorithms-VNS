@@ -7,11 +7,11 @@
 #define rep(x) for(int i = 0; i < (x); ++i)
 #define repj(x) for(int j = 0; j < (x); ++j)
 
-Factory::~Factory() {
-    for (int i = 0; i < machinesNumb; i++)
-        delete[] matrix[i];
-    delete[] matrix;
-}
+//Factory::~Factory() {
+//    for (int i = 0; i < machinesNumb; i++)
+//        delete[] matrix[i];
+//    delete[] matrix;
+//}
 
 vector<int> Factory::split(string &s) {
     if (s[s.length() - 1] != ' ')s += ' ';
@@ -399,8 +399,8 @@ pair<int, int> Factory::getClusterSize(int cluster) {
 }
 
 void Factory::generateStartSolution() {
-    uint iterations = min(machinesNumb, partsNumb) / 3;
-    rep(iterations) divideClusters();
+//    uint iterations = min(machinesNumb, partsNumb) / 2;
+//    rep(iterations) divideClusters();
 }
 
 void Factory::testFunction() {
