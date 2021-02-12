@@ -30,6 +30,7 @@ vector<int> Factory::split(string &s) {
 
 Factory::Factory(const string &fileName) {
     ifstream input("../tests/" + fileName);
+//    ifstream input("tests/" + fileName);
     string dim;
     getline(input, dim);
     auto dimensionsData = split(dim);
@@ -357,10 +358,11 @@ void Factory::shaking() {
         return;
     }
     random_device generator;
-    if (generator() % 2)
-        uniteClusters();
-    else
+    if (generator() % 2) {
         divideClusters();
+    }
+    else
+        uniteClusters();
 }
 
 void Factory::VND(int iterations) {
@@ -368,9 +370,14 @@ void Factory::VND(int iterations) {
     // dividableClustersCount = getDividableClustersCount();
     rep(iterations) {
         shaking();
+        shaking();
+//        divideClusters();
+//        uniteClusters();
+//        divideClusters();
         dividableClustersCount = getDividableClustersCount();
         // dividableClustersCount = getDividableClustersCount();
         localSearch();
+//        cout<<NumberOfClusters<<endl;
         dividableClustersCount = getDividableClustersCount();
         if (getCost() > bestCost) {
             copy(machines.begin(), machines.end(), bestMachines.begin());
