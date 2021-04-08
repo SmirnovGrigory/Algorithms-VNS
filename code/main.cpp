@@ -38,6 +38,7 @@ void test50x150() {
 }
 
 signed main() {
+//    test20x20();
     test20x20();
     return 0;
 }
